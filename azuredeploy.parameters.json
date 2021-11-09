@@ -3,7 +3,7 @@
   "contentVersion": "1.0.0.0",
   "parameters": {
     "rgGroupName": {
-      "value": "rgSampleTest"
+        "value": "rgSampleTest"
     },
     "location": {
       "value": "East US 2"
