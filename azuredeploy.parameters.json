@@ -2,12 +2,6 @@
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    "rgGroupName": {
-        "value": "rgSampleTest"
-    },
-    "location": {
-      "value": "East US 2"
-    },
     "vmssName": {
       "value": "GEN-UNIQUE-5"
     },
@@ -15,12 +9,7 @@
       "value": "GEN-UNIQUE"
     },
     "adminPassword": {
-<<<<<<< HEAD
       "value": "GEN-PASSWORD"
     } 
-=======
-      "value": "Saigon2012!!"
-    }
->>>>>>> 4efb57507c413b4153be671cdc40ca16f54fc369
   }
 }

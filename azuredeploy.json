@@ -2,12 +2,6 @@
     "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
-        "rgGroupName": {
-            "type": "string",
-            "metadata": {
-                "description": "Name of Resource Group to contain all resources."
-            }
-        },
         "vmSku": {
             "type": "string",
             "defaultValue": "Standard_A1_v2",
@@ -103,6 +97,7 @@
         },
         "location": {
             "type": "string",
+            "defaultValue": "[resourceGroup().location]",
             "metadata": {
                 "description": "Location for all resources."
             }
@@ -116,7 +111,7 @@
         }
     },
     "variables": {
-        "namingInfix": "[toLower(substring(concat(parameters('vmssName'), uniqueString(parameters('rgGroupName'))), 0, 9))]",
+        "namingInfix": "[toLower(substring(concat(parameters('vmssName'), uniqueString(resourceGroup().id)), 0, 9))]",
         "longNamingInfix": "[toLower(parameters('vmssName'))]",
         "addressPrefix": "10.0.0.0/16",
         "subnetPrefix": "10.0.0.0/24",
@@ -146,30 +141,6 @@
         "powershelldscZipFullPath": "[uri(parameters('_artifactsLocation'), concat(parameters('powershelldscZip'), parameters('_artifactsLocationSasToken')))]"
     },
     "resources": [
-        {
-            "type": "Microsoft.Resources/deployments",
-            "apiVersion": "2021-04-01",
-            "name": "GenerateResourceGroups",
-            "location": "[parameters('location')]",
-            "properties": {
-                "mode": "Incremental",
-                "template":
-                {
-                    "$schema": "https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#",
-                    "contentVersion": "1.0.0.0",
-                    "resources": [
-                        {
-                            "type": "Microsoft.Resources/resourceGroups",
-                            "apiVersion": "2021-04-01",
-                            "location": "[parameters('Location')]",
-                            "name": "[parameters('rgGroupName')]",
-                            "properties": {}
-                        }
-                    ],
-                    "outputs": { }
-                }
-            }
-        },
         {
             "type": "Microsoft.Network/loadBalancers",
             "apiVersion": "2020-06-01",
@@ -339,9 +310,6 @@
             "apiVersion": "2020-06-01",
             "name": "[variables('publicIPAddressName')]",
             "location": "[parameters('location')]",
-            "dependsOn": [
-                "[resourceId('Microsoft.Resources/deployments', 'GenerateResourceGroups')]"
-            ],
             "properties": {
                 "publicIPAllocationMethod": "Static",
                 "dnsSettings": {
@@ -354,9 +322,6 @@
             "apiVersion": "2020-06-01",
             "name": "[variables('virtualNetworkName')]",
             "location": "[parameters('location')]",
-            "dependsOn" : [
-                "[resourceId('Microsoft.Resources/deployments', 'GenerateResourceGroups')]"
-            ],
             "properties": {
                 "addressSpace": {
                     "addressPrefixes": [
